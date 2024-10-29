@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🐱 Cat Generator</h1>
+        <div class="cat-container">
+            <img id="cat-image" src="https://api.thecatapi.com/v1/images/search?format=src" alt="Random Cat">
+        </div>
+        <button id="generate-btn" onclick="generateCat()">Generate Cat</button>
+    </div>
+
+    <script>
+        function generateCat() {
+            const btn = document.getElementById('generate-btn');
+            const img = document.getElementById('cat-image');
+            
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            
+            fetch('/get-cat')
+                .then(response => response.text())
+                .then(url => {
+                    img.src = url;
+                    btn.disabled = false;
+                    btn.textContent = 'Generate Cat';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    btn.disabled = false;
+                    btn.textContent = 'Generate Cat';
+                });
+        }
+
+        // Handle image load errors
+        document.getElementById('cat-image').onerror = function() {
+            this.src = 'https://api.thecatapi.com/v1/images/search?format=src';
+        };
+    </script>
+</body>
+</html>
